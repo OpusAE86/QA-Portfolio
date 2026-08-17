@@ -1,0 +1,238 @@
+{
+  "info": {
+    "_postman_id": "158bb8c0-9fbc-476b-8cfd-fcb3b8ec747c",
+    "name": "ReqRes API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "56757915",
+    "_collection_link": "https://go.postman.co/collection/56757915-158bb8c0-9fbc-476b-8cfd-fcb3b8ec747c?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "GET users page 2",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Page is \", function () {\r\n    const jsonData = pm.response.json();\r\n    pm.expect(jsonData.page).to.eql(2);\r\n});\r\n\r\npm.test(\"per_page is 6\", function () {\r\n    const jsonData = pm.response.json();\r\n    pm.expect(jsonData.per_page).to.eql(6);\r\n});\r\n\r\npm.test(\"Number of users matches per_page\", function () {\r\n    const jsonData = pm.response.json();\r\n    pm.expect(jsonData.data.length).to.eql(jsonData.per_page);\r\n});\r\n\r\npm.test(\"Every user has required fields\", function () {\r\n    const jsonData = pm.response.json();\r\n\r\n    jsonData.data.forEach(user => {\r\n        pm.expect(user).to.have.property(\"id\");\r\n        pm.expect(user).to.have.property(\"email\");\r\n        pm.expect(user).to.have.property(\"first_name\");\r\n        pm.expect(user).to.have.property(\"last_name\");\r\n        pm.expect(user).to.have.property(\"avatar\");\r\n    });\r\n});\r\npm.test(\"User fields have correct data types\", function () {\r\n    const jsonData = pm.response.json();\r\n\r\n    jsonData.data.forEach(user => {\r\n        pm.expect(user.id).to.be.a(\"number\");\r\n        pm.expect(user.email).to.be.a(\"string\");\r\n        pm.expect(user.first_name).to.be.a(\"string\");\r\n        pm.expect(user.last_name).to.be.a(\"string\");\r\n        pm.expect(user.avatar).to.be.a(\"string\");\r\n    });\r\n});\r\npm.test(\"All emails have valid format\", function () {\r\n    const jsonData = pm.response.json();\r\n    const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;\r\n\r\n    jsonData.data.forEach(user => {\r\n        pm.expect(user.email).to.match(emailRegex);\r\n    });\r\n});"
+            ]
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableCookies": false,
+        "followRedirects": true,
+        "strictSSL": false
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{api_key}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/users?page=2",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "users"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "2"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET user 2",
+      "protocolProfileBehavior": {
+        "disableCookies": false,
+        "followRedirects": true,
+        "strictSSL": false
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{api_key}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/users/2",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST user",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\npm.test(\"Name is correct\", function () {\r\n    const jsonData = pm.response.json();\r\n    pm.expect(jsonData.name).to.eql(\"Andrew\");\r\n});\r\n\r\npm.test(\"Job is correct\", function () {\r\n    const jsonData = pm.response.json();\r\n    pm.expect(jsonData.job).to.eql(\"QA Engineer\");\r\n});\r\npm.test(\"Response contains id\", function () {\r\n    const jsonData = pm.response.json();\r\n    pm.expect(jsonData).to.have.property(\"id\");\r\n});\r\npm.test(\"ID is a number\", function () {\r\n    const jsonData = pm.response.json();\r\n    pm.expect(jsonData.id).to.be.a(\"number\");\r\n});\r\npm.test(\"Response contains createdAt\", function () {\r\n    const jsonData = pm.response.json();\r\n    pm.expect(jsonData).to.have.property(\"createdAt\");\r\n});\r\npm.test(\"createdAt has valid ISO 8601 format\", function () {\r\n    const jsonData = pm.response.json();\r\n\r\n    const date = new Date(jsonData.createdAt);\r\n\r\n    pm.expect(date.toString()).to.not.equal(\"Invalid Date\");\r\n});\r\npm.test(\"createdAt is a string\", function () {\r\n    const jsonData = pm.response.json();\r\n    pm.expect(jsonData.createdAt).to.be.a(\"string\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableCookies": false,
+        "followRedirects": true,
+        "strictSSL": false
+      },
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{api_key}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"Andrew\",\r\n    \"job\": \"QA Engineer\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/users",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PUT user 2",
+      "protocolProfileBehavior": {
+        "disableCookies": false,
+        "followRedirects": true,
+        "strictSSL": false
+      },
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{api_key}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"Andrew\",\r\n    \"job\": \"Senior QA Engineer\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/users/2",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DELETE user 2",
+      "protocolProfileBehavior": {
+        "disableCookies": false,
+        "followRedirects": true,
+        "strictSSL": false
+      },
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{api_key}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/users/2",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
